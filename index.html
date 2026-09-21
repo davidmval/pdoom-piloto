@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>¿Cuánto nos jugamos? · Test piloto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --papel:#EEF1F4; --tarjeta:#FFFFFF; --tinta:#1C2536; --gris:#5E6A7D; --linea:#CBD3DD;
+  --cobalto:#2446C7; --cobalto-suave:#E3E8FA; --ambar:#E8A317;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --texto:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root{ --papel:#151B27; --tarjeta:#1D2535; --tinta:#E8ECF2; --gris:#9AA6B8; --linea:#2F3A4D;
+         --cobalto:#8AA0F5; --cobalto-suave:#26314D; --ambar:#F2B84B; }
+}
+*,*::before,*::after{box-sizing:inherit}
+html,body{margin:0;background:var(--papel);color:var(--tinta)}
+body{font-family:var(--texto);font-size:1.0625rem;line-height:1.55;-webkit-font-smoothing:antialiased}
+main{max-width:40rem;margin:0 auto;padding:1.25rem 1.25rem 3rem;min-height:100vh}
+h1,h2,h3{font-family:var(--display);font-weight:700;line-height:1.15;margin:0}
+h1{font-size:clamp(2.1rem,7vw,3rem);letter-spacing:-0.02em}
+h2{font-size:clamp(1.45rem,4.6vw,1.9rem);letter-spacing:-0.01em}
+h3{font-size:1.15rem}
+p{margin:0 0 1rem}
+.suave{color:var(--gris)}
+.progreso{height:4px;background:var(--linea);border-radius:2px;overflow:hidden;margin:.25rem 0 .9rem}
+.progreso span{display:block;height:100%;background:var(--cobalto);transition:width .25s ease}
+.meta{display:flex;justify-content:space-between;align-items:center;font-size:.9rem;color:var(--gris);min-height:2rem}
+.atras{background:none;border:0;color:var(--cobalto);font:inherit;font-size:.95rem;padding:.35rem 0;cursor:pointer}
+.area-nombre{font-size:.95rem;color:var(--cobalto);font-weight:700;margin:1.2rem 0 .5rem}
+.pregunta{margin:0 0 1.4rem}
+.opciones{display:grid;gap:.6rem}
+.op{display:flex;gap:.85rem;align-items:flex-start;text-align:left;width:100%;
+    background:var(--tarjeta);color:var(--tinta);border:1.5px solid var(--linea);border-radius:12px;
+    padding:.9rem 1rem;font:inherit;cursor:pointer;transition:border-color .15s,background .15s}
+.op:hover{border-color:var(--cobalto)}
+.op .letra{flex:none;width:1.9rem;height:1.9rem;border-radius:50%;display:grid;place-items:center;
+    font-family:var(--display);font-weight:700;background:var(--cobalto-suave);color:var(--cobalto)}
+.op.sel{border-color:var(--cobalto);background:var(--cobalto-suave)}
+.op.sel .letra{background:var(--cobalto);color:var(--tarjeta)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--ambar);outline-offset:2px}
+.escala{display:grid;grid-template-columns:repeat(11,1fr);gap:.35rem}
+.escala .op{justify-content:center;padding:.8rem 0;font-family:var(--display);font-weight:700;font-size:1.1rem}
+.extremos{display:flex;justify-content:space-between;font-size:.9rem;color:var(--gris);margin-top:.45rem}
+.btn{display:inline-block;background:var(--cobalto);color:#fff;border:0;border-radius:999px;
+    padding:.85rem 1.6rem;font:inherit;font-weight:700;cursor:pointer}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+.btn.sec{background:transparent;color:var(--cobalto);border:1.5px solid var(--cobalto)}
+.portada{padding-top:12vh}
+.portada p{max-width:32rem}
+.lista-simple{margin:0 0 1.6rem;padding-left:1.1rem;color:var(--gris)}
+.bloque-num{font-family:var(--display);font-size:5rem;line-height:1;color:var(--cobalto);opacity:.25;margin:10vh 0 .5rem}
+.grupo{margin:0 0 1.5rem}
+.grupo h3{margin-bottom:.6rem}
+.chips{display:flex;flex-wrap:wrap;gap:.45rem}
+.chip{background:var(--tarjeta);border:1.5px solid var(--linea);border-radius:999px;padding:.5rem .95rem;
+    font:inherit;font-size:.95rem;color:var(--tinta);cursor:pointer}
+.chip.sel{border-color:var(--cobalto);background:var(--cobalto-suave);color:var(--cobalto);font-weight:700}
+/* Resultado */
+.explica{background:var(--tarjeta);border-radius:14px;padding:1.2rem 1.25rem;margin:1rem 0 2rem;border:1px solid var(--linea)}
+.explica p:last-child{margin:0}
+.medidor{margin:0 0 1.6rem}
+.cifra{font-family:var(--display);font-weight:700;font-size:clamp(4rem,18vw,6.5rem);line-height:.95;letter-spacing:-0.03em}
+.barra{position:relative;height:2.6rem;margin:1.2rem 0 .4rem;border-radius:8px;background:var(--linea);overflow:hidden}
+.barra .fuera{position:absolute;top:0;bottom:0;background:repeating-linear-gradient(135deg,transparent 0 6px,rgba(94,106,125,.35) 6px 8px)}
+.barra .relleno{position:absolute;left:0;top:0;bottom:0;background:var(--ambar);width:0;transition:width 1.1s cubic-bezier(.2,.7,.2,1)}
+.barra .aguja{position:absolute;top:-2px;bottom:-2px;width:3px;background:var(--tinta);left:0;transition:left 1.1s cubic-bezier(.2,.7,.2,1)}
+.marcas{display:flex;justify-content:space-between;font-size:.8rem;color:var(--gris)}
+.nota-fuera{font-size:.85rem;color:var(--gris);margin-top:.35rem}
+.global{font-size:1.2rem;line-height:1.5;margin:0 0 2rem}
+.areas{display:grid;gap:1.1rem;margin:0 0 2rem}
+.area-fila h3{font-size:1.05rem;margin-bottom:.3rem}
+.mini{height:6px;background:var(--linea);border-radius:3px;overflow:hidden;margin:.2rem 0 .45rem}
+.mini span{display:block;height:100%;background:var(--cobalto)}
+.area-fila p{margin:0;color:var(--gris)}
+.destacado{border-left:4px solid var(--ambar);padding:.2rem 0 .2rem 1rem;margin:0 0 1.3rem}
+.destacado h3{margin-bottom:.25rem}
+.destacado p{margin:0}
+.cierre{font-family:var(--display);font-weight:700;font-size:clamp(1.6rem,5.5vw,2.2rem);line-height:1.2;
+    text-align:center;margin:2.8rem 0 3rem;padding:2rem 0;border-top:1px solid var(--linea);border-bottom:1px solid var(--linea)}
+.estado{font-size:.9rem;color:var(--gris);margin:0 0 1rem}
+.feedback{background:var(--tarjeta);border:1px solid var(--linea);border-radius:14px;padding:1.3rem 1.25rem}
+.feedback label{display:block;font-weight:700;margin:1.1rem 0 .4rem}
+.feedback label:first-of-type{margin-top:.6rem}
+.feedback select,.feedback textarea,.feedback input{width:100%;font:inherit;color:var(--tinta);background:var(--papel);
+    border:1.5px solid var(--linea);border-radius:10px;padding:.65rem .8rem}
+.feedback textarea{min-height:5rem;resize:vertical}
+.acciones{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.4rem;align-items:center}
+.enlace{background:none;border:0;color:var(--cobalto);font:inherit;text-decoration:underline;cursor:pointer;padding:0}
+@media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+</style>
+</head>
+<body>
+<main id="app" aria-live="polite"></main>
+
+<script>
+/* ========= CONFIGURACIÓN ========= */
+const CONFIG = {
+  ENDPOINT: 'https://script.google.com/macros/s/AKfycbzZSaoZUW6Fj-ZSBOm9iVIcHjySPjER-Eu8aPZQqMDS-2fcmFwcjPmh9fHzpt8g_vPi8Q/exec',   // Pega aquí la URL de tu Apps Script (termina en /exec)
+  WHATSAPP: '34639182980'    // Opcional: tu número con prefijo y sin espacios, p. ej. 34600111222
+};
+
+/* ========= CONTENIDO ========= */
+const AREAS = [
+  { id:'A', corto:'¿Llegará?', nombre:'¿Llegará una IA más capaz que las personas?',
+    intro:'Las tres primeras preguntas van sobre hasta dónde llegará la IA.',
+    escala:[5,30,60,90], umbrales:[0.35,0.65],
+    lineas:[
+      'Dudas de que llegue una IA más capaz que las personas. Para ti, la inteligencia humana tiene algo difícil de igualar.',
+      'Crees que la IA seguirá mejorando mucho, pero no tienes claro que llegue a superarnos en todo.',
+      'Crees que la superinteligencia es cuestión de cuándo, no de si.'],
+    preguntas:[
+      {id:'A1', texto:'Piensa en lo que hace hoy la IA: escribir, programar, crear imágenes. Dentro de 10 años, ¿cómo será comparada con la de hoy?',
+       op:['Parecida, ya ha tocado techo','Algo mejor, sin grandes cambios','Mucho mejor','Irreconocible']},
+      {id:'A2', texto:'¿Llegará una IA que haga cualquier trabajo de ordenador tan bien como una persona experta?',
+       op:['Nunca','Quizá, dentro de mucho','Probablemente antes de 2050','Sí, en pocos años']},
+      {id:'A3', texto:'Antes de que acabe este siglo, ¿habrá máquinas más inteligentes que las personas…?',
+       op:['No, la inteligencia humana es otra cosa','Solo en tareas concretas','En la mayoría de cosas','En prácticamente todo']}
+    ]},
+  { id:'B', corto:'¿Querrá lo mismo?', nombre:'Si llega, ¿querrá lo mismo que nosotros?',
+    intro:'Ahora, sobre si una IA muy capaz haría lo que queremos.',
+    escala:[5,30,60,90], umbrales:[0.35,0.65],
+    lineas:[
+      'Confías en que una IA muy capaz entendería y respetaría lo que queremos.',
+      'Dudas de que una IA más lista cumpla los encargos como esperamos, aunque no la ves necesariamente en contra.',
+      'Crees probable que una IA más lista acabe persiguiendo objetivos distintos a los nuestros.'],
+    preguntas:[
+      {id:'B1', texto:'Imagina una IA mucho más inteligente que cualquier persona. Le encargamos un objetivo, por ejemplo acabar con una enfermedad. ¿Lo cumplirá como nosotros esperamos?',
+       op:['Sí, entenderá lo que queremos','Casi siempre, con algún despiste','Lo cumplirá a su manera, aunque no nos guste','Acabará persiguiendo sus propios objetivos']},
+      {id:'B2', texto:'Si una IA fuera más lista que quienes la crearon, ¿podrían comprobar qué hace realmente y por qué?',
+       op:['Sí, sin problema','En su mayor parte','Solo en parte','No']},
+      {id:'B3', texto:'Las empresas de IA compiten por llegar primero. Entre ir rápido e ir con cuidado, ¿qué elegirán?',
+       op:['Siempre con cuidado','Casi siempre con cuidado','Casi siempre rápido','Siempre rápido']}
+    ]},
+  { id:'C', corto:'¿Cuánto daño?', nombre:'Si no quiere lo mismo, ¿cuánto daño podría hacer?',
+    intro:'Estas tres tratan de qué pasaría si no lo hiciera.',
+    escala:[5,30,60,90], umbrales:[0.35,0.65],
+    lineas:[
+      'Crees que, si algo fallara, podríamos detectarlo y corregirlo a tiempo.',
+      'Ves posibles daños serios, aunque confías en que tendríamos margen de reacción.',
+      'Ves una sociedad muy dependiente de sistemas conectados y difícil de desenchufar.'],
+    preguntas:[
+      {id:'C1', texto:'Si una IA muy capaz empezara a hacer cosas que no queremos, ¿podríamos apagarla?',
+       op:['Sí, fácilmente','Sí, con esfuerzo','Sería muy difícil','No']},
+      {id:'C2', texto:'Luz, bancos, hospitales, transporte: ¿cuánto dependen hoy de sistemas informáticos conectados?',
+       op:['Poco, hay alternativas manuales','Bastante, pero aguantarían','Mucho','Totalmente']},
+      {id:'C3', texto:'Si una IA persiguiera objetivos distintos a los nuestros, ¿qué es lo más probable?',
+       op:['Se detecta y se corrige','Problemas serios pero locales','Daños graves a gran escala','Daños irreversibles']}
+    ]},
+  { id:'D', corto:'Mal uso', nombre:'¿Alguien la usará para hacer daño a gran escala?',
+    intro:'Aquí la pregunta cambia: no la IA por sí sola, sino personas que la usen para hacer daño.',
+    escala:[1,5,15,30], umbrales:[0.08,0.18],
+    lineas:[
+      'No ves la IA como la llave que dé a alguien la capacidad de causar un daño masivo.',
+      'Crees que la IA puede facilitar algunos ataques graves, aunque con límites.',
+      'Te preocupa que la IA ponga al alcance de pocas personas un daño a gran escala.'],
+    preguntas:[
+      {id:'D1', texto:'¿Cuántas personas o grupos en el mundo querrían causar un daño masivo?',
+       op:['Prácticamente nadie','Muy pocos','Algunos','Bastantes']},
+      {id:'D2', texto:'¿Hará la IA más fácil que alguien sin formación fabrique un arma o lance un ciberataque grave?',
+       op:['No','Un poco','Bastante','Mucho']},
+      {id:'D3', texto:'Las IA llevan filtros para no ayudar a hacer daño. ¿Funcionarán?',
+       op:['Siempre','Casi siempre','A veces','Casi nunca']}
+    ]},
+  { id:'G', corto:'Normas', nombre:'¿Llegaremos a tiempo con normas?',
+    intro:'Por último, las normas: leyes y acuerdos entre países.',
+    escala:[5,30,60,90], umbrales:[0.35,0.65], invertida:true,
+    lineas:[
+      'Tienes poca confianza en que las normas lleguen a tiempo o se cumplan.',
+      'Crees que las normas llegarán, aunque tarde o de forma incompleta.',
+      'Confías en que la cooperación internacional pueda poner límites eficaces.'],
+    preguntas:[
+      {id:'G1', texto:'¿Consiguen las leyes ir al ritmo de la tecnología?',
+       op:['Nunca','Van muy por detrás','Algo por detrás, pero llegan','Sí']},
+      {id:'G2', texto:'¿Se pondrán de acuerdo EE. UU., China y la UE en normas comunes sobre IA?',
+       op:['No','Quizá en algo menor','En lo básico, sí','Sí, en un acuerdo sólido']},
+      {id:'G3', texto:'Si hubiera normas internacionales, ¿se cumplirían?',
+       op:['No','Poco','Bastante','Sí']}
+    ]}
+];
+
+const POLITICA = { texto:'¿Quién debería poner límites a la IA?',
+  op:['Nadie, que avance libre','Las propias empresas','Cada gobierno','Un acuerdo entre países'] };
+
+const DATOS = [
+  {id:'edad', titulo:'Edad', op:['<18','18–25','26–40','41–60','>60']},
+  {id:'ocupacion', titulo:'Ocupación', op:['Estudiante','Docente','Sanidad o servicios sociales','Tecnología','Otro sector','Sin empleo o jubilado']},
+  {id:'uso', titulo:'¿Cada cuánto usas IA?', op:['Nunca','Alguna vez','Cada semana','A diario']}
+];
+
+const GLOBAL = [
+  [0.05,'Ves el riesgo como algo muy remoto. En tu visión, casi todo tendría que salir mal a la vez para que ocurriera una catástrofe.'],
+  [0.15,'Ves un riesgo bajo pero real. No crees que sea lo más probable, aunque tampoco lo descartas.'],
+  [0.30,'Ves un riesgo moderado. Piensas que hay caminos plausibles hacia un problema grave, aunque siguen siendo minoría.'],
+  [0.50,'Ves un riesgo serio, pero no inevitable: en tu visión hay varios caminos por los que esto sale bien.'],
+  [1.01,'Ves más probable que esto salga mal que bien. En tu visión, varias de las piezas que tendrían que protegernos fallan a la vez.']
+];
+
+const INTUICION = {
+  igual:'Tu preocupación inicial y tu cálculo apuntan en la misma dirección.',
+  alarmista:'Tu intuición es más alarmista que tu cálculo: cuando desglosas el problema en piezas, el riesgo te sale menor de lo que sientes.',
+  tranquila:'Tu intuición es más tranquila que tu cálculo: pieza a pieza, tus respuestas dibujan más riesgo del que sientes.'
+};
+
+const LETRAS = ['A','B','C','D'];
+
+/* ========= CÁLCULO ========= */
+function probabilidades(resp){
+  const p = {};
+  AREAS.forEach(a => {
+    const v = a.preguntas.map(q => a.escala[resp[q.id]]);
+    p[a.id] = v.reduce((s,x) => s + x, 0) / v.length / 100;
+  });
+  return p;
+}
+function calcularPdoom(p){
+  const bruto = 1 - (1 - p.A * p.B * p.C) * (1 - p.D);
+  return bruto * (1 - 0.5 * p.G);
+}
+function nivel(area, prob){
+  return prob < area.umbrales[0] ? 0 : (prob < area.umbrales[1] ? 1 : 2);
+}
+function palanca(p){
+  const base = calcularPdoom(p);
+  let mejor = null;
+  AREAS.forEach(a => {
+    const q = Object.assign({}, p);
+    q[a.id] = (a.invertida ? Math.max(...a.escala) : Math.min(...a.escala)) / 100;
+    const nuevo = calcularPdoom(q);
+    if (!mejor || base - nuevo > mejor.caida) mejor = {area:a, nuevo, caida:base - nuevo};
+  });
+  return {base, ...mejor};
+}
+function intuicion(ancla, pd){
+  const a = ancla <= 3 ? 0 : (ancla <= 6 ? 1 : 2);
+  const c = pd < 0.15 ? 0 : (pd < 0.40 ? 1 : 2);
+  return a === c ? 'igual' : (a > c ? 'alarmista' : 'tranquila');
+}
+function rango(){
+  const min = {}, max = {};
+  AREAS.forEach(a => {
+    const lo = Math.min(...a.escala)/100, hi = Math.max(...a.escala)/100;
+    min[a.id] = a.invertida ? hi : lo;
+    max[a.id] = a.invertida ? lo : hi;
+  });
+  return [calcularPdoom(min), calcularPdoom(max)];
+}
+function fmt(x){ return x < 0.01 ? '<1\u00a0%' : Math.round(x*100) + '\u00a0%'; }
+
+/* ========= ESTADO Y PASOS ========= */
+const PASOS = [{tipo:'inicio'},{tipo:'ancla'}];
+AREAS.forEach((a,i) => {
+  PASOS.push({tipo:'area', area:a, num:i+1});
+  a.preguntas.forEach(q => PASOS.push({tipo:'pregunta', area:a, q}));
+});
+PASOS.push({tipo:'politica'},{tipo:'datos'},{tipo:'resultado'});
+const TOTAL_PREGUNTAS = PASOS.filter(s => ['ancla','pregunta','politica','datos'].includes(s.tipo)).length;
+
+const estado = { paso:0, ancla:null, resp:{}, politica:null, datos:{}, codigo:obtenerCodigo(),
+                 enviadoResp:false, estadoEnvio:'', fbEnviado:false };
+
+function obtenerCodigo(){
+  const abc = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  try { const c = localStorage.getItem('pdoom_codigo'); if (c) return c; } catch(e){}
+  let c = ''; for (let i=0;i<4;i++) c += abc[Math.floor(Math.random()*abc.length)];
+  try { localStorage.setItem('pdoom_codigo', c); } catch(e){}
+  return c;
+}
+
+function numeroPregunta(){
+  let n = 0;
+  for (let i=0;i<=estado.paso;i++) if (['ancla','pregunta','politica','datos'].includes(PASOS[i].tipo)) n++;
+  return n;
+}
+
+/* ========= RENDER ========= */
+const app = typeof document !== 'undefined' ? document.getElementById('app') : null;
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function cabecera(){
+  const n = numeroPregunta();
+  const pct = Math.round((n-1) / TOTAL_PREGUNTAS * 100);
+  return `<div class="meta">
+      <button class="atras" data-accion="atras">‹ Atrás</button>
+      <span>${n} de ${TOTAL_PREGUNTAS}</span></div>
+    <div class="progreso" aria-hidden="true"><span style="width:${pct}%"></span></div>`;
+}
+
+function opcionesHTML(textos, seleccion, grupo){
+  return `<div class="opciones">${textos.map((t,i) => `
+    <button class="op${seleccion===i?' sel':''}" data-grupo="${grupo}" data-valor="${i}" aria-pressed="${seleccion===i}">
+      <span class="letra">${LETRAS[i]}</span><span>${esc(t)}</span></button>`).join('')}</div>`;
+}
+
+let ultimoPaso = -1;
+function render(){
+  const s = PASOS[estado.paso];
+  let h = '';
+  if (s.tipo === 'inicio'){
+    h = `<section class="portada">
+      <h1>¿Cuánto nos jugamos?</h1>
+      <p style="margin-top:1rem">Un test sobre el futuro de la inteligencia artificial. Son preguntas sencillas sobre lo que tú crees que va a pasar. No hay respuestas correctas.</p>
+      <ul class="lista-simple">
+        <li>20 preguntas, unos 5 minutos.</li>
+        <li>Anónimo: solo se guarda tu nombre si decides escribirlo al final.</li>
+        <li>Al terminar verás tu resultado explicado.</li>
+      </ul>
+      <button class="btn" data-accion="siguiente">Empezar</button></section>`;
+  }
+  else if (s.tipo === 'ancla'){
+    h = cabecera() + `<h2 class="pregunta" style="margin-top:1.4rem">Antes de empezar: del 0 al 10, ¿cuánto te preocupa que la IA acabe causando un daño muy grave a la humanidad?</h2>
+      <div class="escala">${Array.from({length:11},(_,i)=>`<button class="op${estado.ancla===i?' sel':''}" data-grupo="ancla" data-valor="${i}" aria-pressed="${estado.ancla===i}">${i}</button>`).join('')}</div>
+      <div class="extremos"><span>Nada</span><span>Muchísimo</span></div>`;
+  }
+  else if (s.tipo === 'area'){
+    h = `<div class="meta"><button class="atras" data-accion="atras">‹ Atrás</button><span>Bloque ${s.num} de ${AREAS.length}</span></div>
+      <div class="bloque-num" aria-hidden="true">${s.num}</div>
+      <h2>${esc(s.area.nombre)}</h2>
+      <p class="suave" style="margin:1rem 0 2rem">${esc(s.area.intro)}</p>
+      <button class="btn" data-accion="siguiente">Continuar</button>`;
+  }
+  else if (s.tipo === 'pregunta'){
+    h = cabecera() + `<div class="area-nombre">${esc(s.area.nombre)}</div>
+      <h2 class="pregunta">${esc(s.q.texto)}</h2>` + opcionesHTML(s.q.op, estado.resp[s.q.id], 'resp:'+s.q.id);
+  }
+  else if (s.tipo === 'politica'){
+    h = cabecera() + `<div class="area-nombre">Una última opinión</div>
+      <h2 class="pregunta">${esc(POLITICA.texto)}</h2>` + opcionesHTML(POLITICA.op, estado.politica, 'politica');
+  }
+  else if (s.tipo === 'datos'){
+    const completo = DATOS.every(d => estado.datos[d.id] != null);
+    h = cabecera() + `<div class="area-nombre">Para las estadísticas</div>
+      <h2 class="pregunta">Tres datos sobre ti</h2>
+      ${DATOS.map(d => `<div class="grupo"><h3>${esc(d.titulo)}</h3><div class="chips">
+        ${d.op.map((o,i)=>`<button class="chip${estado.datos[d.id]===i?' sel':''}" data-grupo="dato:${d.id}" data-valor="${i}" aria-pressed="${estado.datos[d.id]===i}">${esc(o)}</button>`).join('')}
+      </div></div>`).join('')}
+      <button class="btn" data-accion="siguiente" ${completo?'':'disabled'}>Ver mi resultado</button>`;
+  }
+  else if (s.tipo === 'resultado'){
+    h = resultadoHTML();
+  }
+  app.innerHTML = h;
+  if (estado.paso !== ultimoPaso){ window.scrollTo(0,0); ultimoPaso = estado.paso; }
+  if (s.tipo === 'resultado'){
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const pd = calcularPdoom(probabilidades(estado.resp));
+      const rel = app.querySelector('.relleno'), ag = app.querySelector('.aguja');
+      if (rel) rel.style.width = (pd*100) + '%';
+      if (ag) ag.style.left = `calc(${pd*100}% - 1.5px)`;
+    }));
+    if (!estado.enviadoResp) enviarRespuestas();
+  }
+}
+
+function resultadoHTML(){
+  const p = probabilidades(estado.resp);
+  const pd = calcularPdoom(p);
+  const [rmin, rmax] = rango();
+  const global = GLOBAL.find(g => pd < g[0])[1];
+  const pal = palanca(p);
+  const intu = INTUICION[intuicion(estado.ancla, pd)];
+
+  const areasHTML = AREAS.map(a => {
+    const pr = p[a.id], max = Math.max(...a.escala)/100;
+    const ancho = Math.round(pr / max * 100);
+    return `<div class="area-fila"><h3>${esc(a.nombre)}</h3>
+      <div class="mini" aria-hidden="true"><span style="width:${ancho}%"></span></div>
+      <p>${esc(a.lineas[nivel(a, pr)])}</p></div>`;
+  }).join('');
+
+  const palTexto = pal.caida < 0.005
+    ? 'Tus respuestas ya son las más tranquilas en todas las áreas: tu resultado no puede bajar más.'
+    : `Es el área «${esc(pal.area.corto)}». Si en ella hubieras elegido siempre la opción más ${pal.area.invertida?'optimista':'tranquila'}, tu resultado bajaría del ${fmt(pal.base)} al ${fmt(pal.nuevo)}.`;
+
+  return `<h1 style="font-size:clamp(1.8rem,6vw,2.4rem);margin-top:1rem">Tu resultado</h1>
+
+    <div class="explica">
+      <h3 style="margin-bottom:.5rem">Qué es el P(doom)</h3>
+      <p>En el mundo de la IA se habla del <strong>P(doom)</strong>: la probabilidad (la P) de que la inteligencia artificial acabe provocando una catástrofe muy grave para la humanidad. <em>Doom</em> significa «fatalidad» en inglés.</p>
+      <p>No es una predicción ni un dato científico: es una forma de poner número a lo que cada persona cree. Entre los expertos hay cifras muy distintas, desde casi cero hasta más del 50&nbsp;%.</p>
+      <p>El tuyo sale de combinar tus 15 respuestas. Para que el riesgo sea real tienen que ocurrir varias cosas a la vez, y por eso las áreas no se suman: se multiplican.</p>
+    </div>
+
+    <section class="medidor" aria-label="Tu P(doom)">
+      <div class="cifra">${fmt(pd)}</div>
+      <div class="barra" role="img" aria-label="Tu resultado es ${fmt(pd)} en una escala de 0 a 100">
+        <div class="fuera" style="left:0;width:${rmin*100}%"></div>
+        <div class="fuera" style="left:${rmax*100}%;right:0"></div>
+        <div class="relleno"></div>
+        <div class="aguja"></div>
+      </div>
+      <div class="marcas"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div>
+      <p class="nota-fuera">Las zonas rayadas quedan fuera del alcance del test: nadie puede sacar menos del ${fmt(rmin)} ni más del ${fmt(rmax)}.</p>
+    </section>
+
+    <p class="global">${esc(global)}</p>
+
+    <h2 style="margin-bottom:1rem">Tus cinco áreas</h2>
+    <div class="areas">${areasHTML}</div>
+
+    <div class="destacado"><h3>Lo que más pesa en tu resultado</h3><p>${palTexto}</p></div>
+    <div class="destacado"><h3>Intuición frente a cálculo</h3><p>Al empezar marcaste un ${estado.ancla} sobre 10. ${esc(intu)}</p></div>
+
+    <p class="cierre">Nadie sabe lo suficiente para decir «imposible».</p>
+
+    <p class="estado" id="estadoEnvio">${estadoEnvioHTML()}</p>
+
+    ${feedbackHTML()}
+    <p style="margin-top:2rem"><button class="enlace" data-accion="reiniciar">Repetir el test</button></p>`;
+}
+
+function estadoEnvioHTML(){
+  if (estado.estadoEnvio === 'ok') return `Tus respuestas se han guardado. Tu código es <strong>${estado.codigo}</strong>.`;
+  if (estado.estadoEnvio === 'fallo') return `No se han podido guardar tus respuestas. <button class="enlace" data-accion="whatsapp-resp">Envíaselas a David por WhatsApp</button>.`;
+  return 'Guardando tus respuestas…';
+}
+
+function feedbackHTML(){
+  if (estado.fbEnviado) return `<div class="feedback"><h3>Gracias</h3><p style="margin:.5rem 0 0">Comentarios enviados. Me ayudan mucho a afinar el test.</p></div>`;
+  const preguntas = AREAS.flatMap(a => a.preguntas.map(q => q.id));
+  return `<div class="feedback">
+    <h2 style="font-size:1.4rem">Ayúdame a mejorar el test</h2>
+    <p class="suave" style="margin:.4rem 0 0">Es una versión de prueba. Tu opinión decide qué preguntas se reescriben.</p>
+    <label for="fb-dificil">¿Qué pregunta te costó más contestar?</label>
+    <select id="fb-dificil"><option value="">Elige una</option><option>Ninguna</option>${preguntas.map(id=>`<option>${id}</option>`).join('')}</select>
+    <label for="fb-porque">¿Por qué? (opcional)</label>
+    <textarea id="fb-porque"></textarea>
+    <label for="fb-sesgo">¿Alguna pregunta te pareció confusa o que empujaba hacia una respuesta?</label>
+    <textarea id="fb-sesgo"></textarea>
+    <label>¿El resultado encaja con lo que piensas?</label>
+    <div class="chips" id="fb-encaja">${[1,2,3,4,5].map(n=>`<button class="chip" data-encaja="${n}" aria-pressed="false">${n}</button>`).join('')}</div>
+    <p class="suave" style="font-size:.85rem;margin:.35rem 0 0">1 = nada, 5 = totalmente</p>
+    <label for="fb-comentario">Comentario libre</label>
+    <textarea id="fb-comentario"></textarea>
+    <label for="fb-nombre">Tu nombre (opcional)</label>
+    <input id="fb-nombre" type="text" autocomplete="off">
+    <div class="acciones">
+      <button class="btn" data-accion="enviar-fb">Enviar comentarios</button>
+      <span id="fb-estado" class="suave" style="font-size:.9rem"></span>
+    </div></div>`;
+}
+
+/* ========= ENVÍO ========= */
+function datosRespuestas(){
+  const p = probabilidades(estado.resp);
+  const d = { codigo:estado.codigo, ancla:estado.ancla };
+  AREAS.forEach(a => a.preguntas.forEach(q => d[q.id] = LETRAS[estado.resp[q.id]]));
+  d.politica = POLITICA.op[estado.politica];
+  DATOS.forEach(x => d[x.id] = x.op[estado.datos[x.id]]);
+  AREAS.forEach(a => d['area_'+a.id] = Math.round(p[a.id]*1000)/1000);
+  d.pdoom = Math.round(calcularPdoom(p)*1000)/10;
+  return d;
+}
+
+async function enviar(tipo, datos){
+  if (!CONFIG.ENDPOINT) return false;
+  try {
+    await fetch(CONFIG.ENDPOINT, { method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({tipo, datos}) });
+    return true;
+  } catch(e){ return false; }
+}
+
+async function enviarRespuestas(){
+  estado.enviadoResp = true;
+  const ok = await enviar('respuestas', datosRespuestas());
+  estado.estadoEnvio = ok ? 'ok' : 'fallo';
+  const el = document.getElementById('estadoEnvio');
+  if (el) el.innerHTML = estadoEnvioHTML();
+}
+
+function abrirWhatsApp(texto){
+  window.open(`https://wa.me/${CONFIG.WHATSAPP}?text=${encodeURIComponent(texto)}`, '_blank', 'noopener');
+}
+function textoRespuestas(){
+  const d = datosRespuestas();
+  const resp = AREAS.flatMap(a => a.preguntas.map(q => `${q.id} ${d[q.id]}`)).join(' · ');
+  return `Test P(doom) piloto · código ${d.codigo}\nAncla: ${d.ancla}/10\n${resp}\nPolítica: ${d.politica}\nEdad: ${d.edad} · Ocupación: ${d.ocupacion} · Uso IA: ${d.uso}\nP(doom): ${d.pdoom} %`;
+}
+
+let fbEncaja = null;
+async function enviarFeedback(){
+  const v = id => document.getElementById(id).value.trim();
+  const datos = { codigo:estado.codigo, dificil:v('fb-dificil'), porque:v('fb-porque'), sesgo:v('fb-sesgo'),
+                  encaja:fbEncaja ?? '', comentario:v('fb-comentario'), nombre:v('fb-nombre') };
+  const est = document.getElementById('fb-estado');
+  est.textContent = 'Enviando…';
+  const ok = await enviar('feedback', datos);
+  if (ok){ estado.fbEnviado = true; render(); document.querySelector('.feedback').scrollIntoView({block:'center'}); }
+  else {
+    est.innerHTML = 'No se han podido enviar. <button class="enlace" data-accion="whatsapp-fb">Enviar por WhatsApp</button>';
+    estado._fbTexto = `Feedback test P(doom) · código ${datos.codigo}\nMás difícil: ${datos.dificil} ${datos.porque}\nSesgo o confusión: ${datos.sesgo}\nEncaja: ${datos.encaja}/5\nComentario: ${datos.comentario}\nNombre: ${datos.nombre}\n\n` + textoRespuestas();
+  }
+}
+
+/* ========= EVENTOS ========= */
+function avanzar(){ if (estado.paso < PASOS.length-1){ estado.paso++; render(); } }
+
+if (app) {
+  app.addEventListener('click', e => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    const acc = b.dataset.accion;
+    if (acc === 'siguiente') return avanzar();
+    if (acc === 'atras'){ if (estado.paso > 0){ estado.paso--; render(); } return; }
+    if (acc === 'enviar-fb') return enviarFeedback();
+    if (acc === 'whatsapp-resp') return abrirWhatsApp(textoRespuestas());
+    if (acc === 'whatsapp-fb') return abrirWhatsApp(estado._fbTexto || textoRespuestas());
+    if (acc === 'reiniciar'){
+      Object.assign(estado, {paso:0, ancla:null, resp:{}, politica:null, datos:{}, enviadoResp:false, estadoEnvio:'', fbEnviado:false});
+      fbEncaja = null; return render();
+    }
+    if (b.dataset.encaja){
+      fbEncaja = Number(b.dataset.encaja);
+      document.querySelectorAll('[data-encaja]').forEach(x => {
+        const on = Number(x.dataset.encaja) === fbEncaja;
+        x.classList.toggle('sel', on); x.setAttribute('aria-pressed', on);
+      });
+      return;
+    }
+    const g = b.dataset.grupo;
+    if (!g) return;
+    const val = Number(b.dataset.valor);
+    if (g === 'ancla') estado.ancla = val;
+    else if (g === 'politica') estado.politica = val;
+    else if (g.startsWith('resp:')) estado.resp[g.slice(5)] = val;
+    else if (g.startsWith('dato:')){ estado.datos[g.slice(5)] = val; return render(); }
+    render();
+    setTimeout(avanzar, 220);
+  });
+  render();
+}
+</script>
+</body>
+</html>
